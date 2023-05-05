@@ -4,6 +4,7 @@
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <SDL.h>
+#include "shader.h"
 
 int WIDTH = 960;
 int HEIGHT = 540;
@@ -30,7 +31,7 @@ void initScreen() {
         SDL_WINDOWPOS_CENTERED,
         SDL_WINDOWPOS_CENTERED,
         WIDTH, HEIGHT,
-        SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
+        SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI);
 
     mainContext = SDL_GL_CreateContext(window);
     gladLoadGLLoader(SDL_GL_GetProcAddress);
