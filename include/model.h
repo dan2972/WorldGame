@@ -4,6 +4,11 @@
 #include <glad/glad.h>
 #include "mesh.h"
 
+struct RenderInfo {
+    GLuint vao;
+    GLuint indicesCount;
+};
+
 class Model {
 public:
     Model() = default;
@@ -15,13 +20,11 @@ public:
     void addEBO(const std::vector<GLuint> &indices);
     void addVBO(int dimensions, const std::vector<GLfloat> &data);
     void bindVAO() const;
-
-    int getIndicesCount() const;
-    int getVAO() const;
+    
+    const RenderInfo& getRenderInfo() const;
 
 private:
-    GLuint m_vao;
-    GLuint m_indicesCount;
+    RenderInfo m_renderInfo;
 
     int m_vboCount = 0;
     std::vector<GLuint> m_buffers;

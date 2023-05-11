@@ -9,8 +9,8 @@ void Model::addData(const Mesh& mesh) {
 }
 
 void Model::deleteData() {
-    if (m_vao)
-        glDeleteVertexArrays(1, &m_vao);
+    if (m_renderInfo.vao)
+        glDeleteVertexArrays(1, &m_renderInfo.vao);
     if (m_buffers.size() > 0)
         glDeleteBuffers(static_cast<GLsizei>(m_buffers.size()),
                         m_buffers.data());
@@ -18,20 +18,20 @@ void Model::deleteData() {
     m_buffers.clear();
 
     m_vboCount = 0;
-    m_vao = 0;
-    m_indicesCount = 0;
+    m_renderInfo.vao = 0;
+    m_renderInfo.indicesCount = 0;
 }
 
 void Model::genVAO() {
-    if (m_vao != 0)
+    if (m_renderInfo.vao != 0)
         deleteData();
 
-    glGenVertexArrays(1, &m_vao);
-    glBindVertexArray(m_vao);
+    glGenVertexArrays(1, &m_renderInfo.vao);
+    glBindVertexArray(m_renderInfo.vao);
 }
 
 void Model::addEBO(const std::vector<GLuint> &indices) {
-    m_indicesCount = static_cast<GLuint>(indices.size());
+    m_renderInfo.indicesCount = static_cast<GLuint>(indices.size());
     GLuint ebo;
     glGenBuffers(1, &ebo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
@@ -55,13 +55,9 @@ void Model::addVBO(int dimensions, const std::vector<GLfloat> &data){
 }
 
 void Model::bindVAO() const{
-    glBindVertexArray(m_vao);
+    glBindVertexArray(m_renderInfo.vao);
 }
 
-int Model::getIndicesCount() const{
-    return m_indicesCount;
-}
-
-int Model::getVAO() const{
-    return m_vao;
+const RenderInfo& Model::getRenderInfo() const {
+    return m_renderInfo;
 }

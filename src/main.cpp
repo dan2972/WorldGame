@@ -1,10 +1,37 @@
 #include <iostream>
+#define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #include <iostream>
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <SDL.h>
 #include "shader.h"
+#include "camera.h"
+#include "input_manager.h"
+#include "chunk_renderer.h"
+#include "chunk_mesh.h"
+#include "resource_manager.h"
+#include <array>
+
+const std::array<GLfloat, 12> frontFace{
+    0, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1,
+};
+
+const std::array<GLfloat, 12> backFace{
+    1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0,
+};
+
+const std::array<GLfloat, 12> leftFace{
+    0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0,
+};
+
+const std::array<GLfloat, 12> rightFace{
+    1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1,
+};
+
+const std::array<GLfloat, 12> topFace{
+    0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0,
+};
 
 int WIDTH = 960;
 int HEIGHT = 540;
@@ -12,6 +39,10 @@ unsigned TICKS_PER_SECOND = 60;
 unsigned FPS = 0;
 SDL_Window* window = nullptr;
 SDL_GLContext mainContext;
+
+Camera camera;
+
+ChunkMesh mesh;
 
 void initScreen() {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -39,16 +70,69 @@ void initScreen() {
 
     //SDL_GL_SetSwapInterval(0);
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
+}
+
+void init() {
+    InputManager::mapControl(InputManager::MoveForward, SDL_SCANCODE_W);
+    InputManager::mapControl(InputManager::MoveLeft, SDL_SCANCODE_A);
+    InputManager::mapControl(InputManager::MoveBackward, SDL_SCANCODE_S);
+    InputManager::mapControl(InputManager::MoveRight, SDL_SCANCODE_D);
+    InputManager::mapControl(InputManager::MoveUp, SDL_SCANCODE_SPACE);
+    InputManager::mapControl(InputManager::MoveDown, SDL_SCANCODE_LSHIFT);
+    
+    ResourceManager::loadTexture("res/grass.png", false, "grass");
+
+    mesh.addFace(frontFace, {0, 0, 1, 0, 1, 1, 0, 1}, {0, 0, 0}, {0, 0, 0});
+    mesh.addFace(backFace, {0, 0, 1, 0, 1, 1, 0, 1}, {0, 0, 0}, {0, 0, 0});
+    mesh.addFace(topFace, {0, 0, 1, 0, 1, 1, 0, 1}, {0, 0, 0}, {0, 0, 0});
+    mesh.addFace(leftFace, {0, 0, 1, 0, 1, 1, 0, 1}, {0, 0, 0}, {0, 0, 0});
+    mesh.addFace(rightFace, {0, 0, 1, 0, 1, 1, 0, 1}, {0, 0, 0}, {0, 0, 0});
+
+    mesh.addFace(frontFace, {0, 0, 1, 0, 1, 1, 0, 1}, {0, 0, 0}, {0, 2, 0});
+    mesh.addFace(backFace, {0, 0, 1, 0, 1, 1, 0, 1}, {0, 0, 0}, {0, 2, 0});
+    mesh.addFace(topFace, {0, 0, 1, 0, 1, 1, 0, 1}, {0, 0, 0}, {0, 2, 0});
+    mesh.addFace(leftFace, {0, 0, 1, 0, 1, 1, 0, 1}, {0, 0, 0}, {0, 2, 0});
+    mesh.addFace(rightFace, {0, 0, 1, 0, 1, 1, 0, 1}, {0, 0, 0}, {0, 2, 0});
+    mesh.bufferMesh();
 }
 
 void fixedUpdate() {
-
 }
 
-void render(float deltaFraction) {
+void handleInput(float deltaTime) {
+    InputManager::update();
+    if (InputManager::isKeyDown(InputManager::MoveForward)) {
+        camera.processKeyboard(Camera::Forward, deltaTime);
+    }
+    if (InputManager::isKeyDown(InputManager::MoveLeft)) {
+        camera.processKeyboard(Camera::Left, deltaTime);
+    }
+    if (InputManager::isKeyDown(InputManager::MoveBackward)) {
+        camera.processKeyboard(Camera::Backward, deltaTime);
+    }
+    if (InputManager::isKeyDown(InputManager::MoveRight)) {
+        camera.processKeyboard(Camera::Right, deltaTime);
+    }
+    if (InputManager::isKeyDown(InputManager::MoveUp)) {
+        camera.processKeyboard(Camera::Up, deltaTime);
+    }
+    if (InputManager::isKeyDown(InputManager::MoveDown)) {
+        camera.processKeyboard(Camera::Down, deltaTime);
+    }
+}
+
+void render(float deltaFraction, float deltaTime, ChunkRenderer& chunkRenderer) {
+    handleInput(deltaTime);
+    //glViewport(0, 0, WIDTH, HEIGHT);
+    glClearColor(0.47f, 0.655f, 1.0f, 1.0f);
+    glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+
+    camera.updateProjection(WIDTH, HEIGHT);
+
+    chunkRenderer.addChunk(mesh);
+    chunkRenderer.render(camera);
     
+    SDL_GL_SwapWindow(window);
 }
 
 void runGameLoop() {
@@ -61,6 +145,8 @@ void runGameLoop() {
 
     SDL_SetRelativeMouseMode(SDL_TRUE); // trap the mouse to the window
 
+    ChunkRenderer chunkRenderer;
+
     SDL_Event event;
     bool quit = false;
     while (!quit) {
@@ -69,13 +155,21 @@ void runGameLoop() {
         double deltaTime = (now - lastTime) / 1000.0f;
         lastTime = now;
 
+        handleInput(deltaTime);
+
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
                 quit = true;
+            } else if (event.type == SDL_MOUSEMOTION) {
+                if (SDL_GetWindowFlags(window) & SDL_WINDOW_INPUT_FOCUS)
+                    camera.processMouseMovement(event.motion.xrel, -event.motion.yrel);
             } else if (event.type == SDL_KEYDOWN) {
                 switch (event.key.keysym.sym) {
                 case SDLK_ESCAPE:
                     SDL_SetRelativeMouseMode(SDL_FALSE);
+                    break;
+                default:
+                    SDL_SetRelativeMouseMode(SDL_TRUE);
                     break;
                 }
             }
@@ -85,7 +179,7 @@ void runGameLoop() {
             fixedUpdate();
             delta--;
         }
-        render(static_cast<float>(delta));
+        render(static_cast<float>(delta), static_cast<float>(deltaTime), chunkRenderer);
         ++frames;
         
         if (SDL_GetTicks64() - timer > 1000) {
@@ -100,6 +194,8 @@ void runGameLoop() {
 
 int main() {
     initScreen();
+    init();
     runGameLoop();
+    ResourceManager::clear();
     return 0;
 }
