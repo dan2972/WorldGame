@@ -12,7 +12,7 @@ public:
     void addFace(const std::array<GLfloat, 12> &blockFace,
                  const std::array<GLfloat, 8> &textureCoords,
                  const glm::vec3 &chunkPosition,
-                 const glm::vec3 &blockPosition);
+                 const glm::vec3 &blockPosition, GLfloat cardinalLight);
 
     void bufferMesh();
 
@@ -21,10 +21,10 @@ public:
     void deleteData();
 
     int getNumFaces();
+    Model m_model;
 private:
     Mesh m_mesh;
-    Model m_model;
-
+    std::vector<GLfloat> m_light;
     int m_faces = 0;
     GLuint m_indexCounter = 0;
 };

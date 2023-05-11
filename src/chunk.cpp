@@ -1,4 +1,5 @@
 #include "chunk.h"
+#include "perlin_generator.h"
 #include <random>
 
 Chunk::Chunk(int chunkX, int chunkZ) : m_chunkX{ chunkX }, m_chunkZ{ chunkZ } {
@@ -6,15 +7,15 @@ Chunk::Chunk(int chunkX, int chunkZ) : m_chunkX{ chunkX }, m_chunkZ{ chunkZ } {
 	std::random_device dev;
 	std::mt19937 rng(dev());
 	std::uniform_int_distribution<std::mt19937::result_type> dist6(0, 1);
-	/*
-	for (unsigned i = 0; i < m_chunk.size(); ++i) {
-		if (dist6(rng)) {
-			m_chunk[i] = Grass;
-		}
-	}*/
+	
+	// for (unsigned i = 0; i < m_chunk.size(); ++i) {
+	// 	if (dist6(rng)) {
+	// 		m_chunk[i] = Grass;
+	// 	}
+	// }
 	for (int i = 0; i < CHUNK_SIZE; ++i) {
 		for (int j = 0; j < CHUNK_SIZE; ++j) {
-			float p = 0.8f;
+			float p = 1.0f - PerlinGenerator::getValueAt(chunkX * CHUNK_SIZE + j, chunkZ * CHUNK_SIZE + i, 0.02, 6);
 			for (int y = 0; y < CHUNK_SIZE * p; ++y) {
 				placeBlock(j, y, i, Grass);
 			}
@@ -24,6 +25,10 @@ Chunk::Chunk(int chunkX, int chunkZ) : m_chunkX{ chunkX }, m_chunkZ{ chunkZ } {
 
 BlockType Chunk::getBlockAt(unsigned x, unsigned y, unsigned z) const {
 	return m_chunk[y * CHUNK_SIZE * CHUNK_SIZE + z * CHUNK_SIZE + x];
+}
+
+const std::array<BlockType, CHUNK_SIZE* CHUNK_SIZE* CHUNK_SIZE>& Chunk::getBlocks() const {
+	return m_chunk;
 }
 
 void Chunk::removeBlock(unsigned x, unsigned y, unsigned z) {

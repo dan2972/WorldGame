@@ -22,10 +22,10 @@ std::vector<Chunk*> ChunkMap::getChunks() const {
 }
 
 BlockType ChunkMap::getBlockAt(int x, int y, int z) const {
-	int chunkX = x >= 0 ? x / Chunk::CHUNK_SIZE : (x - Chunk::CHUNK_SIZE + 1) / Chunk::CHUNK_SIZE;
-	int chunkZ = z >= 0 ? z / Chunk::CHUNK_SIZE : (z - Chunk::CHUNK_SIZE + 1) / Chunk::CHUNK_SIZE;
-	int localX = x - chunkX * Chunk::CHUNK_SIZE;
-	int localZ = z - chunkZ * Chunk::CHUNK_SIZE;
+	int chunkX = x >= 0 ? x / CHUNK_SIZE : (x - CHUNK_SIZE + 1) / CHUNK_SIZE;
+	int chunkZ = z >= 0 ? z / CHUNK_SIZE : (z - CHUNK_SIZE + 1) / CHUNK_SIZE;
+	int localX = x - chunkX * CHUNK_SIZE;
+	int localZ = z - chunkZ * CHUNK_SIZE;
 	Chunk* chunk = getChunk(chunkX, chunkZ);
 	if (chunk != nullptr) {
 		return chunk->getBlockAt(localX, y, localZ);
@@ -34,10 +34,10 @@ BlockType ChunkMap::getBlockAt(int x, int y, int z) const {
 }
 
 int ChunkMap::getSunLightAt(int x, int y, int z) const {
-	int chunkX = x >= 0 ? x / Chunk::CHUNK_SIZE : (x - Chunk::CHUNK_SIZE + 1) / Chunk::CHUNK_SIZE;
-	int chunkZ = z >= 0 ? z / Chunk::CHUNK_SIZE : (z - Chunk::CHUNK_SIZE + 1) / Chunk::CHUNK_SIZE;
-	int localX = x - chunkX * Chunk::CHUNK_SIZE;
-	int localZ = z - chunkZ * Chunk::CHUNK_SIZE;
+	int chunkX = x >= 0 ? x / CHUNK_SIZE : (x - CHUNK_SIZE + 1) / CHUNK_SIZE;
+	int chunkZ = z >= 0 ? z / CHUNK_SIZE : (z - CHUNK_SIZE + 1) / CHUNK_SIZE;
+	int localX = x - chunkX * CHUNK_SIZE;
+	int localZ = z - chunkZ * CHUNK_SIZE;
 	Chunk* chunk = getChunk(chunkX, chunkZ);
 	if (chunk != nullptr) {
 		return chunk->getSunLight(localX, y, localZ);
@@ -46,10 +46,10 @@ int ChunkMap::getSunLightAt(int x, int y, int z) const {
 }
 
 int ChunkMap::getBlockLightAt(int x, int y, int z) const {
-	int chunkX = x >= 0 ? x / Chunk::CHUNK_SIZE : (x - Chunk::CHUNK_SIZE + 1) / Chunk::CHUNK_SIZE;
-	int chunkZ = z >= 0 ? z / Chunk::CHUNK_SIZE : (z - Chunk::CHUNK_SIZE + 1) / Chunk::CHUNK_SIZE;
-	int localX = x - chunkX * Chunk::CHUNK_SIZE;
-	int localZ = z - chunkZ * Chunk::CHUNK_SIZE;
+	int chunkX = x >= 0 ? x / CHUNK_SIZE : (x - CHUNK_SIZE + 1) / CHUNK_SIZE;
+	int chunkZ = z >= 0 ? z / CHUNK_SIZE : (z - CHUNK_SIZE + 1) / CHUNK_SIZE;
+	int localX = x - chunkX * CHUNK_SIZE;
+	int localZ = z - chunkZ * CHUNK_SIZE;
 	Chunk* chunk = getChunk(chunkX, chunkZ);
 	if (chunk != nullptr) {
 		return chunk->getBlockLight(localX, y, localZ);

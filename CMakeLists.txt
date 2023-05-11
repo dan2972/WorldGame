@@ -28,3 +28,5 @@ endfunction()
 copy_resources( res/default_shader.frag
                 res/default_shader.vert
                 res/grass.png)
+
+add_definitions(-DCMAKE_EXPORT_COMPILE_COMMANDS=ON)

@@ -2,7 +2,7 @@
 #include "stdio.h"
 
 void Camera::updateProjection(int width, int height) {
-    m_projection = glm::perspective(glm::radians(getZoom()), (float)width / (float)height, 0.1f, 500.0f);
+    m_projection = glm::perspective(glm::radians(getZoom()), (float)width / (float)height, 0.1f, 5000.0f);
     m_projView = m_projection * glm::lookAt(m_position, m_position + m_front, m_up);
 }
 

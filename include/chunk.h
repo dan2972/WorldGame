@@ -2,20 +2,20 @@
 #define CHUNK_H
 
 #include <array>
-enum BlockType {
-	Air,
-	Grass
-};
+#include "block_type.h"
+
+static const int CHUNK_SIZE = 16;
 
 class Chunk
 {
 public:
-	static const int CHUNK_SIZE = 16;
 	Chunk(int chunkX, int chunkZ);
 
 	BlockType getBlockAt(unsigned x, unsigned y, unsigned z) const;
 	void placeBlock(unsigned x, unsigned y, unsigned z, BlockType type);
 	void removeBlock(unsigned x, unsigned y, unsigned z);
+
+	const std::array<BlockType, CHUNK_SIZE* CHUNK_SIZE* CHUNK_SIZE>& getBlocks() const;
 
 	int getChunkX() const;
 	int getChunkZ() const;

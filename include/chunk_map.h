@@ -3,29 +3,30 @@
 #include <memory>
 #include <vector>
 #include "chunk.h"
+
+struct ChunkCoord {
+    ChunkCoord(int x, int z) : x{ x }, z{ z } {}
+    int x, z;
+};
+
+struct HashFunc {
+    size_t operator()(const ChunkCoord& c) const {
+        size_t h1 = std::hash<int>()(c.x);
+        size_t h2 = std::hash<int>()(c.z);
+        return (h1 ^ (h2 << 1));
+    }
+};
+
+struct EqualsFunc {
+    bool operator()(const ChunkCoord& lhs, const ChunkCoord& rhs) const {
+        return (lhs.x == rhs.x) && (lhs.z == rhs.z);
+    }
+};
+
 class ChunkMap
 {
 public:
 	ChunkMap() = default;
-
-    struct ChunkCoord {
-        ChunkCoord(int x, int z) : x{ x }, z{ z } {}
-        int x, z;
-    };
-
-    struct HashFunc {
-        size_t operator()(const ChunkCoord& c) const {
-            size_t h1 = std::hash<int>()(c.x);
-            size_t h2 = std::hash<int>()(c.z);
-            return (h1 ^ (h2 << 1));
-        }
-    };
-
-    struct EqualsFunc {
-        bool operator()(const ChunkCoord& lhs, const ChunkCoord& rhs) const {
-            return (lhs.x == rhs.x) && (lhs.z == rhs.z);
-        }
-    };
 
     void addChunk(Chunk* chunk);
 
