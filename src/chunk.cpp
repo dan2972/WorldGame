@@ -16,8 +16,12 @@ Chunk::Chunk(int chunkX, int chunkZ) : m_chunkX{ chunkX }, m_chunkZ{ chunkZ } {
 	for (int i = 0; i < CHUNK_SIZE; ++i) {
 		for (int j = 0; j < CHUNK_SIZE; ++j) {
 			float p = 1.0f - PerlinGenerator::getValueAt(chunkX * CHUNK_SIZE + j, chunkZ * CHUNK_SIZE + i, 0.02, 6);
-			for (int y = 0; y < CHUNK_SIZE * p; ++y) {
-				placeBlock(j, y, i, Grass);
+			for (int y = 0; y < (CHUNK_SIZE_Y - 32) + 32 * p; ++y) {
+				if (dist6(rng)) {
+					placeBlock(j, y, i, Stone);
+				} else {
+					placeBlock(j, y, i, Grass);
+				}
 			}
 		}
 	}
@@ -27,7 +31,7 @@ BlockType Chunk::getBlockAt(unsigned x, unsigned y, unsigned z) const {
 	return m_chunk[y * CHUNK_SIZE * CHUNK_SIZE + z * CHUNK_SIZE + x];
 }
 
-const std::array<BlockType, CHUNK_SIZE* CHUNK_SIZE* CHUNK_SIZE>& Chunk::getBlocks() const {
+const std::array<BlockType, CHUNK_SIZE* CHUNK_SIZE* CHUNK_SIZE_Y>& Chunk::getBlocks() const {
 	return m_chunk;
 }
 

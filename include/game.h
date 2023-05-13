@@ -12,6 +12,7 @@
 #include "chunk_map.h"
 #include "world_mesh_builder.h"
 #include "perlin_generator.h"
+#include "block_database.h"
 
 class Game {
 public:

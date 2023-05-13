@@ -27,6 +27,8 @@ function(copy_resources)
 endfunction()
 copy_resources( res/default_shader.frag
                 res/default_shader.vert
-                res/grass.png)
+                res/grass.png
+                res/atlas.png
+                )
 
 add_definitions(-DCMAKE_EXPORT_COMPILE_COMMANDS=ON)

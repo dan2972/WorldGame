@@ -5,6 +5,7 @@
 #include "block_type.h"
 
 static const int CHUNK_SIZE = 16;
+static const int CHUNK_SIZE_Y = 256;
 
 class Chunk
 {
@@ -15,7 +16,7 @@ public:
 	void placeBlock(unsigned x, unsigned y, unsigned z, BlockType type);
 	void removeBlock(unsigned x, unsigned y, unsigned z);
 
-	const std::array<BlockType, CHUNK_SIZE* CHUNK_SIZE* CHUNK_SIZE>& getBlocks() const;
+	const std::array<BlockType, CHUNK_SIZE* CHUNK_SIZE* CHUNK_SIZE_Y>& getBlocks() const;
 
 	int getChunkX() const;
 	int getChunkZ() const;
@@ -28,8 +29,8 @@ public:
 	bool requestedUpdate = false;
 
 private:
-	std::array<BlockType, CHUNK_SIZE* CHUNK_SIZE* CHUNK_SIZE> m_chunk{};
-	std::array<char, CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE> m_lightMap{};
+	std::array<BlockType, CHUNK_SIZE* CHUNK_SIZE* CHUNK_SIZE_Y> m_chunk{};
+	std::array<char, CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE_Y> m_lightMap{};
 	int m_chunkX, m_chunkZ;
 };
 

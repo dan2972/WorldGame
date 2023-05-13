@@ -1,5 +1,5 @@
 #include <iostream>
-
+#include "stb_image.h"
 #include "texture.h"
 
 #define GL_TEXTURE_MAX_ANISOTROPY_EXT 0x84FE
@@ -10,6 +10,7 @@ Texture2D::Texture2D()
     : Width(0), Height(0), Internal_Format(GL_RGB), Image_Format(GL_RGB), Wrap_S(GL_REPEAT), Wrap_T(GL_REPEAT), Filter_Min(GL_NEAREST_MIPMAP_LINEAR), Filter_Max(GL_NEAREST)
 {
     glGenTextures(1, &this->ID);
+    stbi_set_flip_vertically_on_load(true);
 }
 
 void Texture2D::generate(unsigned int width, unsigned int height, unsigned char* data)

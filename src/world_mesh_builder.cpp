@@ -1,4 +1,5 @@
 #include "world_mesh_builder.h"
+#include "block_database.h"
 #include <glm/vec3.hpp>
 
 namespace {
@@ -22,9 +23,9 @@ namespace {
         0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0,
     };
 
-    const std::array<GLfloat, 8> texCoords{
-        0, 0, 1, 0, 1, 1, 0, 1,
-    };
+    // const std::array<GLfloat, 8> texCoords{
+    //     0, 0, 1, 0, 1, 1, 0, 1,
+    // };
 
     const std::array<GLfloat, 12> bottomFace{
         0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1
@@ -77,7 +78,7 @@ BlockType WorldMeshBuilder::getBackBlock(int x, int y, int z, const Chunk& chunk
 }
 
 BlockType WorldMeshBuilder::getUpBlock(int x, int y, int z, const Chunk& chunk) {
-    if (y < CHUNK_SIZE - 1) {
+    if (y < CHUNK_SIZE_Y - 1) {
         return chunk.getBlockAt(x, y+1, z);
     } else {
         return Air;
@@ -128,10 +129,12 @@ std::vector<ChunkMesh*> WorldMeshBuilder::getChunkMeshes() {
 void WorldMeshBuilder::buildChunkMesh(const Chunk& chunk) {
     ChunkMesh* mesh = new ChunkMesh();
     const glm::vec3 chunkPos{chunk.getChunkX(), 0, chunk.getChunkZ()};
-    for (int y = 0; y < CHUNK_SIZE; ++y) {
+    for (int y = 0; y < CHUNK_SIZE_Y; ++y) {
 		for (int z = 0; z < CHUNK_SIZE; ++z) {
 			for (int x = 0; x < CHUNK_SIZE; ++x) {
-                if (chunk.getBlockAt(x, y, z) != Air) {
+                BlockType bType = chunk.getBlockAt(x, y, z);
+                if (bType != Air) {
+                    const std::array<GLfloat, 8> texCoords = BlockDatabase::getTexCoord(bType);
                     if(getLeftBlock(x, y, z, chunk) == Air) {
                         mesh->addFace(leftFace, texCoords, chunkPos, {x, y, z}, LIGHT_X);
                     }

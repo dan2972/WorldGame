@@ -12,9 +12,13 @@ Game::Game(SDL_Window* window, int WIDTH, int HEIGHT)
     PerlinGenerator::initialize(123);
     
     ResourceManager::loadTexture("res/grass.png", false, "grass");
+    ResourceManager::loadTexture("res/atlas.png", false, "atlas");
+
+    BlockDatabase::addBlockData(Grass, {0, 0});
+    BlockDatabase::addBlockData(Stone, {1, 0});
 
     //chunkMap.addChunk(new Chunk(0, 0));
-    int mapsize = 50;
+    int mapsize = 10;
     for (int i = 0; i < mapsize; ++i) {
         for (int j = 0; j < mapsize; ++j) {
             chunkMap.addChunk(new Chunk(i, j));

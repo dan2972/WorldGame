@@ -1,4 +1,7 @@
+#pragma once
+
 enum BlockType {
 	Air,
-	Grass
+	Grass,
+	Stone
 };
