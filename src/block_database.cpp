@@ -6,7 +6,7 @@ void BlockDatabase::addBlockData(BlockType type, TexPos TexPos) {
     m_texCoordMap.emplace(type, convertPosToTexCoords(TexPos[1], TexPos[0]));
 }
 
-std::array<GLfloat, 8> BlockDatabase::getTexCoord(BlockType type) {
+TexCoords BlockDatabase::getTexCoord(BlockType type) {
     return m_texCoordMap.at(type);
 }
 

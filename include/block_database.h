@@ -10,7 +10,7 @@ typedef std::array<unsigned, 2> TexPos;
 class BlockDatabase {
 public:
     static void addBlockData(BlockType type, TexPos TexPos);
-    static std::array<GLfloat, 8> getTexCoord(BlockType type);
+    static TexCoords getTexCoord(BlockType type);
 private:
     static const unsigned ATLAS_WIDTH = 64;
     static const unsigned ATLAS_HEIGHT = 64;
