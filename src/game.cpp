@@ -18,7 +18,7 @@ Game::Game(SDL_Window* window, int WIDTH, int HEIGHT)
     BlockDatabase::addBlockData(Stone, {1, 0});
 
     //chunkMap.addChunk(new Chunk(0, 0));
-    int mapsize = 10;
+    int mapsize = 5;
     for (int i = 0; i < mapsize; ++i) {
         for (int j = 0; j < mapsize; ++j) {
             chunkMap.addChunk(new Chunk(i, j));

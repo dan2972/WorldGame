@@ -23,11 +23,23 @@ Chunk::Chunk(int chunkX, int chunkZ) : m_chunkX{ chunkX }, m_chunkZ{ chunkZ } {
 					placeBlock(j, y, i, Grass);
 				}
 			}
+			// for (int k = 0; k < CHUNK_SIZE_Y; ++k) {
+			// 	if (i < 6 && i >=3 && j < 6 && j >=3 && k < 6 && k >=3)
+			// 		placeBlock(j, k, i, Stone);
+			// 	if (j == 4 && k == 4 && (i == 2 || i == 6))
+			// 		placeBlock(j, k, i, Stone);
+			// 	if (j == 4 && i == 4 && (k == 2 || k == 6))
+			// 		placeBlock(j, k, i, Stone);
+			// 	if (k == 4 && i == 4 && (j == 2 || j == 6))
+			// 		placeBlock(j, k, i, Stone);
+			// }
 		}
 	}
 }
 
 BlockType Chunk::getBlockAt(unsigned x, unsigned y, unsigned z) const {
+	if (y >= CHUNK_SIZE_Y || y < 0)
+		return Air;
 	return m_chunk[y * CHUNK_SIZE * CHUNK_SIZE + z * CHUNK_SIZE + x];
 }
 

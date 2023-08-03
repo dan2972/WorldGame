@@ -5,45 +5,48 @@
 void ChunkMesh::addFace(const std::array<GLfloat, 12> &blockFace,
                         const std::array<GLfloat, 8> &textureCoords,
                         const glm::vec3 &chunkPosition,
-                        const glm::vec3 &blockPosition, GLfloat cardinalLight){
+                        const glm::vec3 &blockPosition,
+                        const std::array<GLfloat, 4> &cardinalLight, bool flipQuad){
     m_faces++;
-    auto &verticies = m_mesh.vertexPositions;
-    auto &texCoords = m_mesh.textureCoords;
+    auto &data = m_mesh.data;
     auto &indices = m_mesh.indices;
 
-    texCoords.insert(texCoords.end(), textureCoords.begin(),
-                     textureCoords.end());
-    
-    for (int i = 0, index = 0; i < 4; ++i) {
-        verticies.push_back(blockFace[index++] + chunkPosition.x * CHUNK_SIZE +
-                            blockPosition.x);
-        verticies.push_back(blockFace[index++] + chunkPosition.y * CHUNK_SIZE +
-                            blockPosition.y);
-        verticies.push_back(blockFace[index++] + chunkPosition.z * CHUNK_SIZE +
-                            blockPosition.z);
-        m_light.push_back(cardinalLight);
+
+    for (int i = 0, index = 0, texIndex = 0, lightIndex = 0; i < 4; ++i) {
+        data.push_back(blockFace[index++] + chunkPosition.x * CHUNK_SIZE +
+                       blockPosition.x);
+        data.push_back(blockFace[index++] + chunkPosition.y * CHUNK_SIZE +
+                       blockPosition.y);
+        data.push_back(blockFace[index++] + chunkPosition.z * CHUNK_SIZE +
+                       blockPosition.z);
+        data.push_back(textureCoords[texIndex++]);
+        data.push_back(textureCoords[texIndex++]);
+        data.push_back(cardinalLight[lightIndex++]);
     }
 
-    indices.insert(indices.end(),
-                   {m_indexCounter, m_indexCounter + 1, m_indexCounter + 2,
+    if (!flipQuad) {
+        indices.insert(indices.end(),
+                    {m_indexCounter, m_indexCounter + 1, m_indexCounter + 2,
 
-                    m_indexCounter + 2, m_indexCounter + 3, m_indexCounter});
+                        m_indexCounter + 2, m_indexCounter + 3, m_indexCounter});
+    } else {
+        indices.insert(indices.end(),
+                    {m_indexCounter + 3, m_indexCounter, m_indexCounter + 1,
+
+                        m_indexCounter + 1, m_indexCounter + 2, m_indexCounter+3});
+    }
+
     m_indexCounter += 4;
 }
 
 void ChunkMesh::bufferMesh() {
     m_model.addData(m_mesh);
-    m_model.addVBO(1, m_light);
 
-    m_mesh.vertexPositions.clear();
-    m_mesh.textureCoords.clear();
+    m_mesh.data.clear();
     m_mesh.indices.clear();
-    m_light.clear();
 
-    m_mesh.vertexPositions.shrink_to_fit();
-    m_mesh.textureCoords.shrink_to_fit();
+    m_mesh.data.shrink_to_fit();
     m_mesh.indices.shrink_to_fit();
-    m_light.shrink_to_fit();
 
     m_indexCounter = 0;
 }

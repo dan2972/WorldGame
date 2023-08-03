@@ -12,7 +12,8 @@ public:
     void addFace(const std::array<GLfloat, 12> &blockFace,
                  const std::array<GLfloat, 8> &textureCoords,
                  const glm::vec3 &chunkPosition,
-                 const glm::vec3 &blockPosition, GLfloat cardinalLight);
+                 const glm::vec3 &blockPosition,
+                 const std::array<GLfloat, 4> &cardinalLight, bool flipQuad = false);
 
     void bufferMesh();
 

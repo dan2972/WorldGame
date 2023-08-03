@@ -3,8 +3,7 @@
 void Model::addData(const Mesh& mesh) {
     genVAO();
 
-    addVBO(3, mesh.vertexPositions);
-    addVBO(2, mesh.textureCoords);
+    setupVBO({3, 2, 1}, mesh.data);
     addEBO(mesh.indices);
 }
 
@@ -39,19 +38,27 @@ void Model::addEBO(const std::vector<GLuint> &indices) {
                  indices.data(), GL_STATIC_DRAW);
 }
 
-void Model::addVBO(int dimensions, const std::vector<GLfloat> &data){
+void Model::setupVBO(const std::vector<int>& dimensions, const std::vector<GLfloat> &data){
     GLuint vbo;
     glGenBuffers(1, &vbo);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(GLfloat), data.data(),
                  GL_STATIC_DRAW);
 
-    glVertexAttribPointer(static_cast<GLuint>(m_vboCount), dimensions, GL_FLOAT,
-                          GL_FALSE, 0, (GLvoid *)0);
+    unsigned dimSum = 0;
+    for (auto& n : dimensions)
+        dimSum += n;
 
-    glEnableVertexAttribArray(static_cast<GLuint>(m_vboCount++));
+    unsigned accumulator = 0;
+    for (int dimension : dimensions) {
+        glVertexAttribPointer(static_cast<GLuint>(m_vboCount), dimension, GL_FLOAT,
+                          GL_FALSE, dimSum*sizeof(GL_FLOAT), (void*)(accumulator*sizeof(GL_FLOAT)));
 
-    m_buffers.push_back(vbo);
+        glEnableVertexAttribArray(static_cast<GLuint>(m_vboCount++));
+
+        m_buffers.push_back(vbo);
+        accumulator += dimension;
+    }
 }
 
 void Model::bindVAO() const{

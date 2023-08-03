@@ -5,8 +5,7 @@
 #include <vector>
 
 struct Mesh{
-    std::vector<GLfloat> vertexPositions;
-    std::vector<GLfloat> textureCoords;
+    std::vector<GLfloat> data;
     std::vector<GLuint> indices;
 };
 

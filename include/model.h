@@ -18,8 +18,9 @@ public:
 
     void genVAO();
     void addEBO(const std::vector<GLuint> &indices);
-    void addVBO(int dimensions, const std::vector<GLfloat> &data);
     void bindVAO() const;
+
+    void setupVBO(const std::vector<int>& dimensions, const std::vector<GLfloat> &data);
     
     const RenderInfo& getRenderInfo() const;
 
