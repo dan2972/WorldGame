@@ -28,7 +28,7 @@ private:
     void handleInput(float deltaTime);
     unsigned FPS = 0;
 
-    const int WIDTH, HEIGHT;
+    int WIDTH, HEIGHT;
 
     Camera camera;
     ChunkRenderer chunkRenderer;

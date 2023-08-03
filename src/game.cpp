@@ -25,6 +25,8 @@ Game::Game(SDL_Window* window, int WIDTH, int HEIGHT)
         }
     }
     worldMesh.buildMeshes();
+
+    camera.setPosition({0, 256, 0});
 }
 
 void Game::handleInput(float deltaTime) {
@@ -85,6 +87,12 @@ void Game::runGameLoop() {
                 default:
                     SDL_SetRelativeMouseMode(SDL_TRUE);
                     break;
+                }
+            } else if (event.type == SDL_WINDOWEVENT) {
+                if (event.window.event == SDL_WINDOWEVENT_RESIZED)
+                {
+                    WIDTH = event.window.data1;
+                    HEIGHT = event.window.data2;
                 }
             }
         }

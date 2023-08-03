@@ -4,8 +4,8 @@
 #include <SDL.h>
 #include "game.h"
 
-static const int WIDTH = 960;
-static const int HEIGHT = 540;
+static const int START_WIDTH = 1280;//960;
+static const int START_HEIGHT = 720;//540;
 
 SDL_Window* window = nullptr;
 SDL_GLContext mainContext;
@@ -27,8 +27,8 @@ void initScreen() {
     window = SDL_CreateWindow("Voxel Game",
         SDL_WINDOWPOS_CENTERED,
         SDL_WINDOWPOS_CENTERED,
-        WIDTH, HEIGHT,
-        SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI);
+        START_WIDTH, START_HEIGHT,
+        SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_RESIZABLE);
 
     mainContext = SDL_GL_CreateContext(window);
     gladLoadGLLoader(SDL_GL_GetProcAddress);
@@ -40,7 +40,7 @@ void initScreen() {
 
 int main() {
     initScreen();
-    Game game(window, WIDTH, HEIGHT);
+    Game game(window, START_WIDTH, START_HEIGHT);
     game.runGameLoop();
     return 0;
 }

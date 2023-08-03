@@ -2,11 +2,11 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-const float DEFAULT_YAW = -90.0f;
+const float DEFAULT_YAW = 45.0f;
 const float DEFAULT_PITCH = 0.0f;
 const float DEFAULT_SPEED = 20.0f;//10.50f;
 const float DEFAULT_SENSITIVITY = 0.1f;
-const float DEFAULT_ZOOM = 45.0f;
+const float DEFAULT_ZOOM = 60.0f;
 
 class Camera
 {
@@ -32,6 +32,8 @@ public:
     const glm::mat4& getProjViewMatrix() const;
 
     float getZoom();
+
+    void setPosition(const glm::vec3& position);
 
     void processKeyboard(CameraMovement direction, float deltaTime);
     void processMouseMovement(float xoffset, float yoffset, bool constrainPitch = true);
