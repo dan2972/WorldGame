@@ -6,7 +6,7 @@ Chunk::Chunk(int chunkX, int chunkZ) : m_chunkX{ chunkX }, m_chunkZ{ chunkZ } {
 	m_chunk.fill(Air);
 	std::random_device dev;
 	std::mt19937 rng(dev());
-	std::uniform_int_distribution<std::mt19937::result_type> dist6(0, 1);
+	std::uniform_int_distribution<std::mt19937::result_type> dist6(0, 10);
 	
 	// for (unsigned i = 0; i < m_chunk.size(); ++i) {
 	// 	if (dist6(rng)) {
@@ -15,9 +15,9 @@ Chunk::Chunk(int chunkX, int chunkZ) : m_chunkX{ chunkX }, m_chunkZ{ chunkZ } {
 	// }
 	for (int i = 0; i < CHUNK_SIZE; ++i) {
 		for (int j = 0; j < CHUNK_SIZE; ++j) {
-			float p = 1.0f - PerlinGenerator::getValueAt(chunkX * CHUNK_SIZE + j, chunkZ * CHUNK_SIZE + i, 0.02, 6);
+			float p = 1.0f - PerlinGenerator::getValueAt(chunkX * CHUNK_SIZE + j, chunkZ * CHUNK_SIZE + i, 0.01, 6);
 			for (int y = 0; y < (CHUNK_SIZE_Y - 32) + 32 * p; ++y) {
-				if (dist6(rng)) {
+				if (dist6(rng)<2) {
 					placeBlock(j, y, i, Stone);
 				} else {
 					placeBlock(j, y, i, Grass);

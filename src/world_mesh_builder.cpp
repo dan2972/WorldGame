@@ -43,6 +43,16 @@ namespace {
             return 0;
         return 3 - (side1 + side2 + corner);
     }
+
+    void extendTopFaceRight(std::array<GLfloat, 12>& face) {
+        face[3]++;
+        face[6]++;
+    }
+
+    void extendTopFaceDown(std::array<GLfloat, 12>& face) {
+        face[8]++;
+        face[11]++;
+    }
 }
 
 BlockType WorldMeshBuilder::getLeftBlock(int x, int y, int z, const Chunk& chunk) {
@@ -113,6 +123,13 @@ void WorldMeshBuilder::buildMeshes() {
     }
 }
 
+void WorldMeshBuilder::buildMesh(ChunkCoord pos) {
+    Chunk* chunk = m_chunkMap->getChunk(pos.x, pos.z);
+    if (chunk != nullptr) {
+        buildChunkMesh(*chunk);
+    }
+}
+
 void WorldMeshBuilder::render(const Camera& camera) {
     for (auto& it : m_chunkMeshes) {
         m_chunkRenderer->addChunk(*(it.second.get()));
@@ -137,6 +154,63 @@ std::vector<ChunkMesh*> WorldMeshBuilder::getChunkMeshes() {
 void WorldMeshBuilder::buildChunkMesh(const Chunk& chunk) {
     ChunkMesh* mesh = new ChunkMesh();
     const glm::vec3 chunkPos{chunk.getChunkX(), 0, chunk.getChunkZ()};
+
+    // greedy mesh implementation
+    // sweep across all three "sides" (top = 0, front = 1, side = 2)
+    // for (int y = 0; y < CHUNK_SIZE_Y; ++y) {
+    //     std::array<GLfloat, 12> curTopFace = topFace;
+    //     BlockType mask[CHUNK_SIZE][CHUNK_SIZE] = {{None}};
+    //     int startX = 0;
+    //     int startZ = 0;
+        
+    //     for (int z = 0; z < CHUNK_SIZE; ++z) {
+    //         for (int x = 0; x < CHUNK_SIZE; ++x) {
+    //             BlockType bType = chunk.getBlockAt(x, y, z);
+    //             if (bType != Air) {
+    //                 if(getUpBlock(x, y, z, chunk) == Air) {
+    //                     mask[z][x] = bType;
+    //                 }
+    //             }
+    //         }
+    //     }
+
+    //     BlockType curBlockType = None;
+    //     for (int z = 0; z < CHUNK_SIZE; ++z) {
+    //         for (int x = 0; x < CHUNK_SIZE; ++x) {
+    //             if (mask[z][x] != None) {
+    //                 curBlockType = mask[z][x];
+    //                 //try to extend to the right
+    //                 int w = 0;
+    //                 while(x+w < CHUNK_SIZE && mask[z][x+w] == curBlockType) {mask[z][x+w] = None; w++;}
+    //                 //try to extend downwards
+    //                 int h = 1;
+    //                 while(z+h < CHUNK_SIZE) {
+    //                     int k = 0;
+    //                     while(k < w && mask[z+h][x+k] == curBlockType) {k++;}
+    //                     if (k == w) {
+    //                         int t = 0;
+    //                         while(t < w && mask[z+h][x+t] == curBlockType) {mask[z+h][x+t] = None; t++;}
+    //                         ++h;
+    //                     } else
+    //                         break;
+    //                 }
+    //                 --h;
+    //                 --w;
+
+    //                 std::array<GLfloat, 12> face{
+    //                     0, 1, 1+(float)h, 
+    //                     1+(float)w, 1, 1+(float)h, 
+    //                     1+(float)w, 1, 0, 
+    //                     0, 1, 0,
+    //                 };
+    //                 BlockType bType = chunk.getBlockAt(x, y, z);
+    //                 const std::array<GLfloat, 8> texCoords = BlockDatabase::getTexCoord(bType);
+    //                 mesh->addFace(face, texCoords, chunkPos, {x, y, z}, {LIGHT_X, LIGHT_X, LIGHT_X, LIGHT_X});
+    //             }
+    //         }
+    //     }
+    // }
+
     for (int y = 0; y < CHUNK_SIZE_Y; ++y) {
 		for (int z = 0; z < CHUNK_SIZE; ++z) {
 			for (int x = 0; x < CHUNK_SIZE; ++x) {

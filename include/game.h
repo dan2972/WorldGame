@@ -30,6 +30,9 @@ private:
 
     int WIDTH, HEIGHT;
 
+    int timer = 0;
+    int counter = 0;
+
     Camera camera;
     ChunkRenderer chunkRenderer;
     ChunkMap chunkMap;

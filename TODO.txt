@@ -1,0 +1,4 @@
+- implement y chunk separation
+
+- implement basic greedy meshing
+    - implement texture atlasting in greedy meshing

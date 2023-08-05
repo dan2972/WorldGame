@@ -14,6 +14,7 @@ public:
     WorldMeshBuilder(ChunkMap* chunkMap, ChunkRenderer* chunkRenderer);
 
     void buildMeshes();
+    void buildMesh(ChunkCoord pos);
 
     void render(const Camera& camera);
 

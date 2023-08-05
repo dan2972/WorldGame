@@ -18,7 +18,7 @@ Game::Game(SDL_Window* window, int WIDTH, int HEIGHT)
     BlockDatabase::addBlockData(Stone, {1, 0});
 
     //chunkMap.addChunk(new Chunk(0, 0));
-    int mapsize = 5;
+    int mapsize = 10;
     for (int i = 0; i < mapsize; ++i) {
         for (int j = 0; j < mapsize; ++j) {
             chunkMap.addChunk(new Chunk(i, j));
@@ -27,6 +27,8 @@ Game::Game(SDL_Window* window, int WIDTH, int HEIGHT)
     worldMesh.buildMeshes();
 
     camera.setPosition({0, 256, 0});
+
+    // glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 }
 
 void Game::handleInput(float deltaTime) {
@@ -129,5 +131,12 @@ void Game::render(float deltaFraction, float deltaTime) {
 }
 
 void Game::fixedUpdate() {
-
+    // if (timer > 20) {
+    // chunkMap.addChunk(new Chunk(-counter, 0));
+    // worldMesh.buildMesh({-counter+1, 0});
+    // worldMesh.buildMesh({-counter, 0});
+    // counter++;
+    // timer = 0;
+    // }
+    // timer++;
 }
