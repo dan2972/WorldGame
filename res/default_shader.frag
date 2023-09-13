@@ -1,11 +1,11 @@
 #version 410 core
 out vec4 FragColor;  
-in vec2 TexCoord;
+in vec3 TexCoord;
 in float LightLevel;
 
-uniform sampler2D tex;
+uniform sampler2DArray texArray;
   
 void main()
 {
-    FragColor = texture(tex, TexCoord)* LightLevel;
+    FragColor = texture(texArray, TexCoord)* LightLevel;
 }

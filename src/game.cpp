@@ -11,8 +11,10 @@ Game::Game(SDL_Window* window, int WIDTH, int HEIGHT)
 
     PerlinGenerator::initialize(123);
     
-    ResourceManager::loadTexture("res/grass.png", false, "grass");
-    ResourceManager::loadTexture("res/atlas.png", false, "atlas");
+    // ResourceManager::loadTexture("res/grass.png", false, "grass");
+    // ResourceManager::loadTexture("res/atlas.png", false, "atlas");
+
+    ResourceManager::loadTextureArray({"res/grass.png", "res/stone.png"}, false, "atlas");
 
     BlockDatabase::addBlockData(Grass, {0, 0});
     BlockDatabase::addBlockData(Stone, {1, 0});

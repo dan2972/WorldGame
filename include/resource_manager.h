@@ -1,11 +1,13 @@
 #pragma once
 #include <map>
 #include <string>
+#include <vector>
 
 #include <glad/glad.h>
 
 #include "texture.h"
 #include "shader.h"
+#include "texture_array.h"
 
 
 // A static singleton ResourceManager class that hosts several
@@ -19,6 +21,7 @@ public:
     // resource storage
     static std::map<std::string, Shader>    Shaders;
     static std::map<std::string, Texture2D> Textures;
+    static std::map<std::string, TextureArray> TextureArrays;
     // loads (and generates) a shader program from file loading vertex, fragment (and geometry) shader's source code. If gShaderFile is not nullptr, it also loads a geometry shader
     static Shader    loadShader(const char* vShaderFile, const char* fShaderFile, const char* gShaderFile, std::string name);
     // retrieves a stored sader
@@ -28,6 +31,10 @@ public:
     // retrieves a stored texture
     static Texture2D getTexture(std::string name);
     // properly de-allocates all loaded resources
+    static TextureArray loadTextureArray(const std::vector<char*>& files, bool alpha, std::string name);
+    // retrieves a stored texture array
+    static TextureArray getTextureArray(std::string name);
+    // properly de-allocates all loaded resources
     static void      clear();
 private:
     // private constructor, that is we do not want any actual resource manager objects. Its members and functions should be publicly available (static).
@@ -36,4 +43,5 @@ private:
     static Shader    loadShaderFromFile(const char* vShaderFile, const char* fShaderFile, const char* gShaderFile = nullptr);
     // loads a single texture from file
     static Texture2D loadTextureFromFile(const char* file, bool alpha);
+    static TextureArray loadTextureArrayFromFiles(const std::vector<char*>& files, bool alpha);
 };

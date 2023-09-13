@@ -203,8 +203,16 @@ void WorldMeshBuilder::buildChunkMesh(const Chunk& chunk) {
     //                     1+(float)w, 1, 0, 
     //                     0, 1, 0,
     //                 };
+
     //                 BlockType bType = chunk.getBlockAt(x, y, z);
-    //                 const std::array<GLfloat, 8> texCoords = BlockDatabase::getTexCoord(bType);
+    //                 GLfloat textureArrayIndex = (GLfloat)(bType - 2);
+    //                 const std::array<GLfloat, 12> texCoords{
+    //                     0, 0, textureArrayIndex, 
+    //                     1+(float)w, 0, textureArrayIndex, 
+    //                     1+(float)w, 1+(float)h, textureArrayIndex, 
+    //                     0, 1+(float)h, textureArrayIndex
+    //                 };
+    //                 // const std::array<GLfloat, 8> texCoords = BlockDatabase::getTexCoord(bType);
     //                 mesh->addFace(face, texCoords, chunkPos, {x, y, z}, {LIGHT_X, LIGHT_X, LIGHT_X, LIGHT_X});
     //             }
     //         }
@@ -216,7 +224,11 @@ void WorldMeshBuilder::buildChunkMesh(const Chunk& chunk) {
 			for (int x = 0; x < CHUNK_SIZE; ++x) {
                 BlockType bType = chunk.getBlockAt(x, y, z);
                 if (bType != Air) {
-                    const std::array<GLfloat, 8> texCoords = BlockDatabase::getTexCoord(bType);
+                    // const std::array<GLfloat, 8> texCoords = BlockDatabase::getTexCoord(bType);
+                    GLfloat textureArrayIndex = (GLfloat)(bType - 2); // to account for the none and air type
+                    const std::array<GLfloat, 12> texCoords{
+                        0, 0, textureArrayIndex, 1, 0, textureArrayIndex, 1, 1, textureArrayIndex, 0, 1, textureArrayIndex
+                    };
                     int worldX = chunk.getChunkX() * CHUNK_SIZE + x;
 		            int worldZ = chunk.getChunkZ() * CHUNK_SIZE + z;
                     if(getLeftBlock(x, y, z, chunk) == Air) {
@@ -234,14 +246,14 @@ void WorldMeshBuilder::buildChunkMesh(const Chunk& chunk) {
                         int a2 = vertexAO(right, up, rightup);
                         int a3 = vertexAO(up, left, leftup);
 
-                        float ld = (float)(3-a0)*OCCLUSION_INTENSITY;
-                        float rd = (float)(3-a1)*OCCLUSION_INTENSITY;
-                        float ru = (float)(3-a2)*OCCLUSION_INTENSITY;
-                        float lu = (float)(3-a3)*OCCLUSION_INTENSITY;
+                        float ld = 1-(float)(3-a0)*OCCLUSION_INTENSITY;
+                        float rd = 1-(float)(3-a1)*OCCLUSION_INTENSITY;
+                        float ru = 1-(float)(3-a2)*OCCLUSION_INTENSITY;
+                        float lu = 1-(float)(3-a3)*OCCLUSION_INTENSITY;
 
                         bool flip = a0+a2 > a1+a3;
                         
-                        mesh->addFace(leftFace, texCoords, chunkPos, {x, y, z}, {LIGHT_X-rd, LIGHT_X-ld, LIGHT_X-lu, LIGHT_X-ru}, flip);
+                        mesh->addFace(leftFace, texCoords, chunkPos, {x, y, z}, {LIGHT_X*rd, LIGHT_X*ld, LIGHT_X*lu, LIGHT_X*ru}, flip);
                     }
                     if(getRightBlock(x, y, z, chunk) == Air) {
 
@@ -259,14 +271,14 @@ void WorldMeshBuilder::buildChunkMesh(const Chunk& chunk) {
                         int a2 = vertexAO(left, up, leftup);
                         int a3 = vertexAO(up, right, rightup);
 
-                        float rd = (float)(3-a0)*OCCLUSION_INTENSITY;
-                        float ld = (float)(3-a1)*OCCLUSION_INTENSITY;
-                        float lu = (float)(3-a2)*OCCLUSION_INTENSITY;
-                        float ru = (float)(3-a3)*OCCLUSION_INTENSITY;
+                        float rd = 1-(float)(3-a0)*OCCLUSION_INTENSITY;
+                        float ld = 1-(float)(3-a1)*OCCLUSION_INTENSITY;
+                        float lu = 1-(float)(3-a2)*OCCLUSION_INTENSITY;
+                        float ru = 1-(float)(3-a3)*OCCLUSION_INTENSITY;
 
                         bool flip = a0+a2 > a1+a3;
 
-                        mesh->addFace(rightFace, texCoords, chunkPos, {x, y, z}, {LIGHT_X-rd, LIGHT_X-ld, LIGHT_X-lu, LIGHT_X-ru}, flip);
+                        mesh->addFace(rightFace, texCoords, chunkPos, {x, y, z}, {LIGHT_X*rd, LIGHT_X*ld, LIGHT_X*lu, LIGHT_X*ru}, flip);
                     }
                     if(getFrontBlock(x, y, z, chunk) == Air) {
 
@@ -284,14 +296,14 @@ void WorldMeshBuilder::buildChunkMesh(const Chunk& chunk) {
                         int a2 = vertexAO(right, up, rightup);
                         int a3 = vertexAO(up, left, leftup);
 
-                        float ld = (float)(3-a0)*OCCLUSION_INTENSITY;
-                        float rd = (float)(3-a1)*OCCLUSION_INTENSITY;
-                        float ru = (float)(3-a2)*OCCLUSION_INTENSITY;
-                        float lu = (float)(3-a3)*OCCLUSION_INTENSITY;
+                        float ld = 1-(float)(3-a0)*OCCLUSION_INTENSITY;
+                        float rd = 1-(float)(3-a1)*OCCLUSION_INTENSITY;
+                        float ru = 1-(float)(3-a2)*OCCLUSION_INTENSITY;
+                        float lu = 1-(float)(3-a3)*OCCLUSION_INTENSITY;
 
                         bool flip = a0+a2 < a1+a3;
 
-                        mesh->addFace(frontFace, texCoords, chunkPos, {x, y, z}, {LIGHT_Z-ld, LIGHT_Z-rd, LIGHT_Z-ru, LIGHT_Z-lu}, flip);
+                        mesh->addFace(frontFace, texCoords, chunkPos, {x, y, z}, {LIGHT_Z*ld, LIGHT_Z*rd, LIGHT_Z*ru, LIGHT_Z*lu}, flip);
                     }
                     if(getBackBlock(x, y, z, chunk) == Air) {
 
@@ -309,14 +321,14 @@ void WorldMeshBuilder::buildChunkMesh(const Chunk& chunk) {
                         int a2 = vertexAO(right, up, rightup);
                         int a3 = vertexAO(up, left, leftup);
 
-                        float ld = (float)(3-a0)*OCCLUSION_INTENSITY;
-                        float rd = (float)(3-a1)*OCCLUSION_INTENSITY;
-                        float ru = (float)(3-a2)*OCCLUSION_INTENSITY;
-                        float lu = (float)(3-a3)*OCCLUSION_INTENSITY;
+                        float ld = 1-(float)(3-a0)*OCCLUSION_INTENSITY;
+                        float rd = 1-(float)(3-a1)*OCCLUSION_INTENSITY;
+                        float ru = 1-(float)(3-a2)*OCCLUSION_INTENSITY;
+                        float lu = 1-(float)(3-a3)*OCCLUSION_INTENSITY;
 
                         bool flip = a0+a2 > a1+a3;
 
-                        mesh->addFace(backFace, texCoords, chunkPos, {x, y, z}, {LIGHT_Z-rd, LIGHT_Z-ld, LIGHT_Z-lu, LIGHT_Z-ru}, flip);
+                        mesh->addFace(backFace, texCoords, chunkPos, {x, y, z}, {LIGHT_Z*rd, LIGHT_Z*ld, LIGHT_Z*lu, LIGHT_Z*ru}, flip);
                     }
                     if(getUpBlock(x, y, z, chunk) == Air) {
                         
@@ -334,14 +346,14 @@ void WorldMeshBuilder::buildChunkMesh(const Chunk& chunk) {
                         int a2 = vertexAO(right, back, rightback);
                         int a3 = vertexAO(back, left, leftback);
 
-                        float lf = (float)(3-a0)*OCCLUSION_INTENSITY;
-                        float rf = (float)(3-a1)*OCCLUSION_INTENSITY;
-                        float rb = (float)(3-a2)*OCCLUSION_INTENSITY;
-                        float lb = (float)(3-a3)*OCCLUSION_INTENSITY;
+                        float lf = 1-(float)(3-a0)*OCCLUSION_INTENSITY;
+                        float rf = 1-(float)(3-a1)*OCCLUSION_INTENSITY;
+                        float rb = 1-(float)(3-a2)*OCCLUSION_INTENSITY;
+                        float lb = 1-(float)(3-a3)*OCCLUSION_INTENSITY;
 
                         bool flip = a3+a1 > a0+a2;
 
-                        mesh->addFace(topFace, texCoords, chunkPos, {x, y, z}, {LIGHT_TOP-lf, LIGHT_TOP-rf, LIGHT_TOP-rb, LIGHT_TOP-lb}, flip);
+                        mesh->addFace(topFace, texCoords, chunkPos, {x, y, z}, {LIGHT_TOP*lf, LIGHT_TOP*rf, LIGHT_TOP*rb, LIGHT_TOP*lb}, flip);
                     }
                     if(getDownBlock(x, y, z, chunk) == Air) {
 
@@ -359,14 +371,14 @@ void WorldMeshBuilder::buildChunkMesh(const Chunk& chunk) {
                         int a2 = vertexAO(right, back, rightback);
                         int a3 = vertexAO(back, left, leftback);
 
-                        float lf = (float)(3-a0)*OCCLUSION_INTENSITY;
-                        float rf = (float)(3-a1)*OCCLUSION_INTENSITY;
-                        float rb = (float)(3-a2)*OCCLUSION_INTENSITY;
-                        float lb = (float)(3-a3)*OCCLUSION_INTENSITY;
+                        float lf = 1-(float)(3-a0)*OCCLUSION_INTENSITY;
+                        float rf = 1-(float)(3-a1)*OCCLUSION_INTENSITY;
+                        float rb = 1-(float)(3-a2)*OCCLUSION_INTENSITY;
+                        float lb = 1-(float)(3-a3)*OCCLUSION_INTENSITY;
 
                         bool flip = a3+a1 < a0+a2;
 
-                        mesh->addFace(bottomFace, texCoords, chunkPos, {x, y, z}, {LIGHT_BOT-lb, LIGHT_BOT-rb, LIGHT_BOT-rf, LIGHT_BOT-lf}, flip);
+                        mesh->addFace(bottomFace, texCoords, chunkPos, {x, y, z}, {LIGHT_BOT*lb, LIGHT_BOT*rb, LIGHT_BOT*rf, LIGHT_BOT*lf}, flip);
                     }
                 }
             }

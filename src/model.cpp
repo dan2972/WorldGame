@@ -3,7 +3,7 @@
 void Model::addData(const Mesh& mesh) {
     genVAO();
 
-    setupVBO({3, 2, 1}, mesh.data);
+    setupVBO({3, 3, 1}, mesh.data);
     addEBO(mesh.indices);
 }
 

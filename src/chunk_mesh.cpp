@@ -3,7 +3,7 @@
 #include "chunk.h"
 
 void ChunkMesh::addFace(const std::array<GLfloat, 12> &blockFace,
-                        const std::array<GLfloat, 8> &textureCoords,
+                        const std::array<GLfloat, 12> &textureCoords,
                         const glm::vec3 &chunkPosition,
                         const glm::vec3 &blockPosition,
                         const std::array<GLfloat, 4> &cardinalLight, bool flipQuad){
@@ -19,6 +19,7 @@ void ChunkMesh::addFace(const std::array<GLfloat, 12> &blockFace,
                        blockPosition.y);
         data.push_back(blockFace[index++] + chunkPosition.z * CHUNK_SIZE +
                        blockPosition.z);
+        data.push_back(textureCoords[texIndex++]);
         data.push_back(textureCoords[texIndex++]);
         data.push_back(textureCoords[texIndex++]);
         data.push_back(cardinalLight[lightIndex++]);

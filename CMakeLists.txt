@@ -28,6 +28,7 @@ endfunction()
 copy_resources( res/default_shader.frag
                 res/default_shader.vert
                 res/grass.png
+                res/stone.png
                 res/atlas.png
                 )
 

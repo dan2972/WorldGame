@@ -8,6 +8,7 @@
 
 // Instantiate static variables
 std::map<std::string, Texture2D>    ResourceManager::Textures;
+std::map<std::string, TextureArray>    ResourceManager::TextureArrays;
 std::map<std::string, Shader>       ResourceManager::Shaders;
 
 
@@ -31,6 +32,17 @@ Texture2D ResourceManager::loadTexture(const char* file, bool alpha, std::string
 Texture2D ResourceManager::getTexture(std::string name)
 {
     return Textures[name];
+}
+
+TextureArray ResourceManager::loadTextureArray(const std::vector<char*>& files, bool alpha, std::string name)
+{
+    TextureArrays[name] = loadTextureArrayFromFiles(files, alpha);
+    return TextureArrays[name];
+}
+
+TextureArray ResourceManager::getTextureArray(std::string name)
+{
+    return TextureArrays[name];
 }
 
 void ResourceManager::clear()
@@ -103,5 +115,28 @@ Texture2D ResourceManager::loadTextureFromFile(const char* file, bool alpha)
     texture.generate(width, height, data);
     // and finally free image data
     stbi_image_free(data);
+    return texture;
+}
+
+TextureArray ResourceManager::loadTextureArrayFromFiles(const std::vector<char*>& files, bool alpha)
+{
+    // create texture object
+    TextureArray texture;
+    if (alpha)
+    {
+        texture.Internal_Format = GL_RGBA;
+        texture.Image_Format = GL_RGBA;
+    }
+    // load image
+    int width, height, nrChannels;
+    std::vector<unsigned char*> dataset;
+    for (auto& file : files) {
+        printf("file: %s\n", file);
+        unsigned char* data = stbi_load(file, &width, &height, &nrChannels, 0);
+        dataset.push_back(data);
+    }
+    texture.generate(width, height, dataset);
+    for (auto& data : dataset)
+        stbi_image_free(data);
     return texture;
 }

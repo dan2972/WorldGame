@@ -15,7 +15,9 @@ void ChunkRenderer::render(const Camera &camera) {
     glCullFace(GL_BACK);
 
     m_shader.use();
-    Texture2D texture = ResourceManager::getTexture("atlas");
+    // Texture2D texture = ResourceManager::getTexture("atlas");
+	// texture.bind();
+    TextureArray texture = ResourceManager::getTextureArray("atlas");
 	texture.bind();
     
     m_shader.loadProjViewMatrix(camera.getProjViewMatrix());
