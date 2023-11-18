@@ -21,16 +21,18 @@ Game::Game(SDL_Window* window, int WIDTH, int HEIGHT)
 
     //chunkMap.addChunk(new Chunk(0, 0));
     int mapsize = 10;
-    for (int i = 0; i < mapsize; ++i) {
-        for (int j = 0; j < mapsize; ++j) {
-            chunkMap.addChunk(new Chunk(i, j));
+    for (int i = -mapsize / 2; i <= mapsize/2; ++i) {
+        for (int j = -mapsize / 2; j <= mapsize/2; ++j) {
+            Chunk* chunk = new Chunk(i, j);
+            chunk->initialize();
+            chunkMap.addChunk(chunk);
             // if (i != 0 && i != mapsize-1 && j != 0 && j != mapsize-1)
             //     worldMesh.buildMesh({i, j});
         }
     }
-    worldMesh.buildMeshes();
+    // worldMesh.buildMeshes();
 
-    camera.setPosition({0, 256, 0});
+    camera.setPosition({0, 64, 0});
 
     // glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 }
@@ -104,7 +106,7 @@ void Game::runGameLoop() {
         }
 
         while (delta >= 1) {
-            // fixedUpdate();
+            fixedUpdate();
             delta--;
         }
         render(static_cast<float>(delta), static_cast<float>(deltaTime));
@@ -149,15 +151,15 @@ void Game::fixedUpdate() {
     int z = pos.z;
     int chunkX = x >= 0 ? x / CHUNK_SIZE : (x - CHUNK_SIZE + 1) / CHUNK_SIZE;
 	int chunkZ = z >= 0 ? z / CHUNK_SIZE : (z - CHUNK_SIZE + 1) / CHUNK_SIZE;
-    int radius = 5;
+    int radius = 8;
+    chunkMap.addChunkRadius({chunkX, chunkZ}, radius+1);
     for (int i = chunkX - radius; i <= chunkX + radius; ++i) {
         for (int j = chunkZ - radius; j <= chunkZ + radius; ++j) {
-            // chunkMap.addChunkRadius({i, j}, 1);
-            if (chunkMap.getChunk(i, j) == nullptr) {
-				chunkMap.addChunk(new Chunk(i, j));
-			}
+            // if (chunkMap.getChunk(i, j) == nullptr) {
+			// 	chunkMap.addChunk(new Chunk(i, j));
+			// }
             Chunk* chunk = chunkMap.getChunk(i, j);
-            if (chunk == nullptr || chunk->getMeshBuilt() == Unbuilt) {
+            if (chunk->getMeshBuilt() == Unbuilt) {
                 chunkQueue.push({(int)i, (int)j});
                 chunk->setMeshbuilt(Queued);
             }
@@ -172,6 +174,9 @@ void Game::fixedUpdate() {
     if (!chunkQueue.empty()) {
         ChunkCoord coord = chunkQueue.front();
         // printf("%d, %d\n", coord.x, coord.z);
+        Chunk* chunk = chunkMap.getChunk(coord.x, coord.z);
+        // chunk->initialize();
+        chunkMap.initializeChunkRadius(coord, 1);
         worldMesh.buildMesh(coord);
         chunkQueue.pop();
     }

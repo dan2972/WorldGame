@@ -4,15 +4,17 @@
 
 Chunk::Chunk(int chunkX, int chunkZ) : m_chunkX{ chunkX }, m_chunkZ{ chunkZ } {
 	m_chunk.fill(Air);
+}
 
+void Chunk::initialize() {
 	for (int i = 0; i < CHUNK_SIZE; ++i) {
 		for (int j = 0; j < CHUNK_SIZE; ++j) {
-			float p = 1.0f - PerlinGenerator::getValueAt(chunkX * CHUNK_SIZE + j, chunkZ * CHUNK_SIZE + i, 0.01, 6);
+			float p = 1.0f - PerlinGenerator::getValueAt(m_chunkX * CHUNK_SIZE + j, m_chunkZ * CHUNK_SIZE + i, 0.01, 6);
 			int height = (CHUNK_SIZE_Y - 32) + 32 * p;
 
 			for (int y = 0; y < height; ++y) {
-				float x = (chunkX * CHUNK_SIZE + j) * 7.0f;
-				float z = (chunkZ * CHUNK_SIZE + i) * 7.0f;
+				float x = (m_chunkX * CHUNK_SIZE + j) * 7.0f;
+				float z = (m_chunkZ * CHUNK_SIZE + i) * 7.0f;
 				float p2 = PerlinGenerator::getValueAt(x, y * 10.0f, z, 0.001, 5) * 2 - 1;
 				float val = (std::abs(p2));
 				float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
@@ -39,6 +41,7 @@ Chunk::Chunk(int chunkX, int chunkZ) : m_chunkX{ chunkX }, m_chunkZ{ chunkZ } {
 			}
 		}
 	}
+	initialized = true;
 }
 
 BlockType Chunk::getBlockAt(unsigned x, unsigned y, unsigned z) const {

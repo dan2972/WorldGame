@@ -5,7 +5,7 @@
 #include "block_type.h"
 
 static const int CHUNK_SIZE = 16;
-static const int CHUNK_SIZE_Y = 256;
+static const int CHUNK_SIZE_Y = 64;
 
 enum ChunkMeshBuildStatus {
 	Unbuilt,
@@ -17,6 +17,8 @@ class Chunk
 {
 public:
 	Chunk(int chunkX, int chunkZ);
+
+	void initialize();
 
 	BlockType getBlockAt(unsigned x, unsigned y, unsigned z) const;
 	void placeBlock(unsigned x, unsigned y, unsigned z, BlockType type);
@@ -33,6 +35,7 @@ public:
 	void setSunLight(unsigned x, unsigned y, unsigned z, int val);
 
 	bool requestedUpdate = false;
+	bool initialized = false;
 
 	ChunkMeshBuildStatus getMeshBuilt() { return m_chunkMeshBuildStatus; }
 	void setMeshbuilt(ChunkMeshBuildStatus status) { m_chunkMeshBuildStatus = status; }
