@@ -2,6 +2,7 @@
 #define CHUNKMESH_H
 
 #include <glm/vec3.hpp>
+#include <array>
 #include "model.h"
 #include "mesh.h"
 
