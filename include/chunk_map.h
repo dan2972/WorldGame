@@ -30,6 +30,9 @@ public:
 
     void addChunk(Chunk* chunk);
 
+    // radius must be >= 1
+    void addChunkRadius(ChunkCoord pos, unsigned radius);
+
     // returns a chunk at the given chunk coordinates
     // returns a nullptr if the chunk does not exist
     Chunk* getChunk(int chunkX, int chunkY) const;

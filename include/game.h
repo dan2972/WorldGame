@@ -13,6 +13,7 @@
 #include "world_mesh_builder.h"
 #include "perlin_generator.h"
 #include "block_database.h"
+#include <queue>
 
 class Game {
 public:
@@ -38,4 +39,5 @@ private:
     ChunkMap chunkMap;
     WorldMeshBuilder worldMesh{&chunkMap, &chunkRenderer};
     SDL_Window* window;
+    std::queue<ChunkCoord> chunkQueue;
 };

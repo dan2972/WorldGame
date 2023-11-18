@@ -3,6 +3,7 @@ A simple voxel game heavily inspired by Minecraft that I am working on
 using C++ and OpenGL. 
 
 ![](screenshot.png)
+![](screenshot2.png)
 
 ## Controls
 Use W, A, S, D to move, mouse to look around, SHIFT to fly down, SPACE to fly up.

@@ -11,6 +11,10 @@ public:
         return perlin.octave2D_01(x * multiplier, y * multiplier, octaves);
     }
 
+    static double getValueAt(float x, float y, float z, float multiplier, int octaves) {
+        return perlin.octave3D_01(x * multiplier, y * multiplier, z * multiplier, octaves);
+    }
+
 private:
     static siv::PerlinNoise::seed_type noise_seed;
     static siv::PerlinNoise perlin;

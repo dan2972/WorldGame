@@ -5,6 +5,16 @@ void ChunkMap::addChunk(Chunk* chunk) {
 	m_chunkMap.emplace(ChunkCoord{ chunk->getChunkX(), chunk->getChunkZ() }, std::unique_ptr<Chunk>(chunk));
 }
 
+void ChunkMap::addChunkRadius(ChunkCoord pos, unsigned radius) {
+	for (int i = pos.x - radius; i < pos.x + radius; ++i) {
+		for (int j = pos.z - radius; j < pos.z + radius; ++j) {
+			if (getChunk(i, j) == nullptr) {
+				addChunk(new Chunk(i, j));
+			}
+		}
+	}
+}
+
 Chunk* ChunkMap::getChunk(int chunkX, int chunkY) const {
 	auto it = m_chunkMap.find(ChunkCoord{ chunkX, chunkY });
 	if (it != m_chunkMap.end()) {

@@ -4,35 +4,39 @@
 
 Chunk::Chunk(int chunkX, int chunkZ) : m_chunkX{ chunkX }, m_chunkZ{ chunkZ } {
 	m_chunk.fill(Air);
-	std::random_device dev;
-	std::mt19937 rng(dev());
-	std::uniform_int_distribution<std::mt19937::result_type> dist6(0, 10);
-	
-	// for (unsigned i = 0; i < m_chunk.size(); ++i) {
-	// 	if (dist6(rng)) {
-	// 		m_chunk[i] = Grass;
-	// 	}
-	// }
+
 	for (int i = 0; i < CHUNK_SIZE; ++i) {
 		for (int j = 0; j < CHUNK_SIZE; ++j) {
 			float p = 1.0f - PerlinGenerator::getValueAt(chunkX * CHUNK_SIZE + j, chunkZ * CHUNK_SIZE + i, 0.01, 6);
-			for (int y = 0; y < (CHUNK_SIZE_Y - 32) + 32 * p; ++y) {
-				if (dist6(rng)<2) {
+			int height = (CHUNK_SIZE_Y - 32) + 32 * p;
+
+			for (int y = 0; y < height; ++y) {
+				float x = (chunkX * CHUNK_SIZE + j) * 7.0f;
+				float z = (chunkZ * CHUNK_SIZE + i) * 7.0f;
+				float p2 = PerlinGenerator::getValueAt(x, y * 10.0f, z, 0.001, 5) * 2 - 1;
+				float val = (std::abs(p2));
+				float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+				if (r < 1.0f-std::max(0.0f, (y-1) / 10.0f)) {
+					placeBlock(j, y, i, Bedrock);
+				}else if (y < height - 8 - r * 2) {
 					placeBlock(j, y, i, Stone);
+				} if (y < height - 3- r * 2) {
+					placeBlock(j, y, i, Dirt);
 				} else {
 					placeBlock(j, y, i, Grass);
 				}
+				//((float)(height + 50 - y) / (height + 50)) * 0.1f
+				if (y > 13 && y < height - 10 && val <= ((float)(height - y) / (height)) * 0.2f) {
+					removeBlock(j, y, i);
+				}
+				// if (r < 1.0f-std::max(0.0f, (y-1) / 10.0f)) {
+				// 	placeBlock(j, y, i, Bedrock);
+				// } if (r < std::max(0.0f, ((float)((height - y - 2)))/(height * 0.05f))) {
+				// 	placeBlock(j, y, i, Stone);
+				// } else {
+				// 	placeBlock(j, y, i, Grass);
+				// }
 			}
-			// for (int k = 0; k < CHUNK_SIZE_Y; ++k) {
-			// 	if (i < 6 && i >=3 && j < 6 && j >=3 && k < 6 && k >=3)
-			// 		placeBlock(j, k, i, Stone);
-			// 	if (j == 4 && k == 4 && (i == 2 || i == 6))
-			// 		placeBlock(j, k, i, Stone);
-			// 	if (j == 4 && i == 4 && (k == 2 || k == 6))
-			// 		placeBlock(j, k, i, Stone);
-			// 	if (k == 4 && i == 4 && (j == 2 || j == 6))
-			// 		placeBlock(j, k, i, Stone);
-			// }
 		}
 	}
 }

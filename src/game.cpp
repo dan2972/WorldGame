@@ -14,7 +14,7 @@ Game::Game(SDL_Window* window, int WIDTH, int HEIGHT)
     // ResourceManager::loadTexture("res/grass.png", false, "grass");
     // ResourceManager::loadTexture("res/atlas.png", false, "atlas");
 
-    ResourceManager::loadTextureArray({"res/grass.png", "res/stone.png"}, false, "atlas");
+    ResourceManager::loadTextureArray({"res/grass.png", "res/stone.png", "res/dirt.png", "res/bedrock.png"}, false, "atlas");
 
     BlockDatabase::addBlockData(Grass, {0, 0});
     BlockDatabase::addBlockData(Stone, {1, 0});
@@ -24,6 +24,8 @@ Game::Game(SDL_Window* window, int WIDTH, int HEIGHT)
     for (int i = 0; i < mapsize; ++i) {
         for (int j = 0; j < mapsize; ++j) {
             chunkMap.addChunk(new Chunk(i, j));
+            // if (i != 0 && i != mapsize-1 && j != 0 && j != mapsize-1)
+            //     worldMesh.buildMesh({i, j});
         }
     }
     worldMesh.buildMeshes();
@@ -102,7 +104,7 @@ void Game::runGameLoop() {
         }
 
         while (delta >= 1) {
-            fixedUpdate();
+            // fixedUpdate();
             delta--;
         }
         render(static_cast<float>(delta), static_cast<float>(deltaTime));
@@ -141,4 +143,36 @@ void Game::fixedUpdate() {
     // timer = 0;
     // }
     // timer++;
+
+    glm::vec3 pos = camera.getPosition();
+    int x = pos.x;
+    int z = pos.z;
+    int chunkX = x >= 0 ? x / CHUNK_SIZE : (x - CHUNK_SIZE + 1) / CHUNK_SIZE;
+	int chunkZ = z >= 0 ? z / CHUNK_SIZE : (z - CHUNK_SIZE + 1) / CHUNK_SIZE;
+    int radius = 5;
+    for (int i = chunkX - radius; i <= chunkX + radius; ++i) {
+        for (int j = chunkZ - radius; j <= chunkZ + radius; ++j) {
+            // chunkMap.addChunkRadius({i, j}, 1);
+            if (chunkMap.getChunk(i, j) == nullptr) {
+				chunkMap.addChunk(new Chunk(i, j));
+			}
+            Chunk* chunk = chunkMap.getChunk(i, j);
+            if (chunk == nullptr || chunk->getMeshBuilt() == Unbuilt) {
+                chunkQueue.push({(int)i, (int)j});
+                chunk->setMeshbuilt(Queued);
+            }
+        }
+    }
+    // if (chunkMap.getChunk(chunkX, chunkZ) == nullptr) {
+    //     chunkMap.addChunk(new Chunk(chunkX, chunkZ));
+    //     chunkQueue.push({(int)chunkX, (int)chunkZ});
+        
+    // }
+
+    if (!chunkQueue.empty()) {
+        ChunkCoord coord = chunkQueue.front();
+        // printf("%d, %d\n", coord.x, coord.z);
+        worldMesh.buildMesh(coord);
+        chunkQueue.pop();
+    }
 }

@@ -33,6 +33,8 @@ public:
 
     float getZoom();
 
+    glm::vec3 getPosition();
+
     void setPosition(const glm::vec3& position);
 
     void processKeyboard(CameraMovement direction, float deltaTime);

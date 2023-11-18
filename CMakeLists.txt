@@ -30,6 +30,8 @@ copy_resources( res/default_shader.frag
                 res/grass.png
                 res/stone.png
                 res/atlas.png
+                res/bedrock.png
+                res/dirt.png
                 )
 
 add_definitions(-DCMAKE_EXPORT_COMPILE_COMMANDS=ON)

@@ -127,6 +127,7 @@ void WorldMeshBuilder::buildMesh(ChunkCoord pos) {
     Chunk* chunk = m_chunkMap->getChunk(pos.x, pos.z);
     if (chunk != nullptr) {
         buildChunkMesh(*chunk);
+        chunk->setMeshbuilt(Built);
     }
 }
 
